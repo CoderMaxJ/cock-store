@@ -1,0 +1,31 @@
+services:
+  nextjs:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+
+
+    networks:
+      - nextjs_network
+
+  # nginx:
+  #  image: nginx:latest
+  #  ports:
+  #    - "443:443"
+  #    - "8080:80"
+  #  volumes:
+  #    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #    - ./certs:/etc/nginx/certs:ro
+  #  depends_on:
+  #    - nextjs
+  #  networks:
+  #    - nextjs_network
+
+networks:
+  nextjs_network:
+    driver: bridge
+
