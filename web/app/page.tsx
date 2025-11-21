@@ -1,93 +1,155 @@
 "use client";
-import { useState } from "react";
-import {useRouter} from "next/navigation";
 
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
+export default function CockShopPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cocks, setCocks] = useState<any[]>([]);
+  const [comments, setComments] = useState<{ [key: number]: string[] }>({});
+  const [newComment, setNewComment] = useState<{ [key: number]: string }>({});
+  const [likes, setLikes] = useState<{ [key: number]: number }>({});
 
-  const handleLogin = async (e:any) => {
-    e.preventDefault();
-    setError("");
+  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/login/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // important for cookies
-        body: JSON.stringify({ username, password }),
+  // Fetch cocks from backend
+  async function getCocks() {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/posts/?q=${searchTerm}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setCocks(data);
+
+      // Initialize comments and likes
+      const initialComments: { [key: number]: string[] } = {};
+      const initialLikes: { [key: number]: number } = {};
+      data.forEach((c: any) => {
+        initialComments[c.id] = [];
+        initialLikes[c.id] = 0;
       });
-
-      const data = await res.json();
-      if (res.ok){
-        router.push("pages/cocks")
-      } else {
-        setError(data.message || data.error || "Login failed");
-      }
-    } catch (err) {
-      setError("Network error");
+      setComments(initialComments);
+      setLikes(initialLikes);
     }
+  }
+
+  useEffect(() => {
+    getCocks();
+  }, []);
+
+  const filteredCocks = cocks.filter((c) =>
+    c.bloodline.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleCommentSubmit = (id: number, e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment[id] || newComment[id].trim() === "") return;
+
+    setComments((prev) => ({
+      ...prev,
+      [id]: [...prev[id], newComment[id].trim()],
+    }));
+
+    setNewComment((prev) => ({
+      ...prev,
+      [id]: "",
+    }));
+  };
+
+  const handleLike = (id: number) => {
+    setLikes((prev) => ({
+      ...prev,
+      [id]: prev[id] + 1,
+    }));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Sign In
-        </h1>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center text-yellow-700">
+        Digital Game Farm - Fighting Cocks
+      </h1>
 
-        {error && (
-          <div className="bg-red-100 text-red-700 px-4 py-2 mb-4 rounded">
-            {error}
-          </div>
-        )}
+      <div className="flex justify-center mb-6">
+        <input
+          type="text"
+          placeholder="Search by bloodline..."
+          className="w-full max-w-md p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Username
-            </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg font-semibold transition duration-300"
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {filteredCocks.map((cock) => (
+          <div
+            key={cock.id}
+            className="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col"
           >
-            Login
-          </button>
-        </form>
+            <div className="relative w-full h-48 overflow-hidden rounded mb-4">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BACKEND}${cock.image1}`}
+                alt={cock.bloodline}
+                fill
+                style={{ objectFit: "cover" }}
+                className="rounded"
+                unoptimized
+              />
+            </div>
 
-        <p className="mt-6 text-center text-gray-500 text-sm">
-          Don't have an account?{" "}
-          <a href="/register" className="text-indigo-500 hover:underline">
-            Sign up
-          </a>
-        </p>
+            <h2 className="text-lg font-semibold text-gray-800 mb-1">{cock.bloodline}</h2>
+            <p className="text-gray-600 text-sm mb-2">
+              {cock.description || "High-quality fighting cock."}
+            </p>
+            <p className="text-yellow-700 font-bold text-lg mb-2">₱{cock.price || 100}</p>
+
+            {/* Like Button */}
+            <button
+              onClick={() => handleLike(cock.id)}
+              className="flex items-center gap-2 text-red-600 font-semibold mb-3"
+            >
+              ❤️ {likes[cock.id]}
+            </button>
+
+            <button className="mt-auto bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded transition mb-3">
+              Order Now
+            </button>
+
+            {/* Comment Section */}
+            <div className="mt-2">
+              <form onSubmit={(e) => handleCommentSubmit(cock.id, e)}>
+                <input
+                  type="text"
+                  placeholder="Add a formal comment..."
+                  value={newComment[cock.id] || ""}
+                  onChange={(e) =>
+                    setNewComment((prev) => ({ ...prev, [cock.id]: e.target.value }))
+                  }
+                  className="w-full p-1 border border-gray-300 rounded mb-1 text-sm"
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded w-full text-xs"
+                >
+                  Comment
+                </button>
+              </form>
+
+              {/* Display comments in small, formal style */}
+              <div className="mt-1 max-h-24 overflow-y-auto">
+                {comments[cock.id]?.map((c, idx) => (
+                  <p key={idx} className="text-xs text-gray-700 border-b border-gray-200 py-0.5">
+                    {c}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
