@@ -4,9 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8000', // 👈 your Django port
+        protocol: 'https',
+        hostname: 'barili.shop',
         pathname: '/media/**', // 👈 allow all under /media/
       },
     ],
