@@ -30,6 +30,7 @@ export default function CockDetailsPage() {
 
     if (response.ok) {
       const data = await response.json();
+      console.log("=======================",data);
       setCock(data);
     }
   }
@@ -105,7 +106,7 @@ export default function CockDetailsPage() {
           alt="Cock"
           fill
           style={{ objectFit: "cover" }}
-          unoptimized
+          optimized
         />
 
         {/* Left Button */}
