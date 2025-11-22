@@ -30,7 +30,6 @@ export default function CockDetailsPage() {
 
     if (response.ok) {
       const data = await response.json();
-       console.log(data);
       setCock(data);
     }
   }
@@ -46,9 +45,19 @@ export default function CockDetailsPage() {
       </div>
     );
 
-  const imageList = [cock.image1, cock.image2, cock.image3, cock.image4].filter(
-    (img) => img && img !== "" && img !== null
-  );
+  // Build valid image paths
+  const imageList = [
+    cock.image1,
+    cock.image2,
+    cock.image3,
+    cock.image4,
+  ].filter((img) => img && img !== "" && img !== null);
+
+  const backend = process.env.NEXT_PUBLIC_BACKEND;
+  const path = imageList[current];
+
+  // Always guarantee a valid URL → fixes mobile broken images
+  const imageSrc = `${backend}${path.startsWith("/") ? "" : "/"}${path}`;
 
   function prevSlide() {
     setCurrent((prev) => (prev === 0 ? imageList.length - 1 : prev - 1));
@@ -58,7 +67,7 @@ export default function CockDetailsPage() {
     setCurrent((prev) => (prev === imageList.length - 1 ? 0 : prev + 1));
   }
 
-  // Handle touch swipe
+  // Touch handlers
   function onTouchStart(e: any) {
     setTouchStart(e.touches[0].clientX);
   }
@@ -69,9 +78,8 @@ export default function CockDetailsPage() {
 
   function onTouchEnd() {
     const swipeDistance = touchStart - touchEnd;
-
-    if (swipeDistance > 50) nextSlide(); // swipe left
-    if (swipeDistance < -50) prevSlide(); // swipe right
+    if (swipeDistance > 50) nextSlide();
+    if (swipeDistance < -50) prevSlide();
   }
 
   return (
@@ -91,8 +99,9 @@ export default function CockDetailsPage() {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
+        {/* FIXED IMAGE URL */}
         <Image
-          src={`${process.env.NEXT_PUBLIC_BACKEND}${imageList[current]}`}
+          src={imageSrc}
           alt="Cock"
           fill
           style={{ objectFit: "cover" }}
