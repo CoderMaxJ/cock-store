@@ -5,15 +5,15 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import userToken from "@/app/api/user/token";
 
-// Swiper
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Pagination } from "swiper/modules";
-// import "swiper/css";
-// import "swiper/css/pagination";
-
 export default function CockDetailsPage() {
   const { id } = useParams();
   const [cock, setCock] = useState<any>(null);
+  const [current, setCurrent] = useState(0);
+
+  // Touch swipe states
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
   const token = userToken();
 
   async function fetchCock() {
@@ -30,6 +30,7 @@ export default function CockDetailsPage() {
 
     if (response.ok) {
       const data = await response.json();
+       console.log(data);
       setCock(data);
     }
   }
@@ -45,14 +46,36 @@ export default function CockDetailsPage() {
       </div>
     );
 
-  // Collect all images safely
   const imageList = [cock.image1, cock.image2, cock.image3, cock.image4].filter(
     (img) => img && img !== "" && img !== null
   );
 
+  function prevSlide() {
+    setCurrent((prev) => (prev === 0 ? imageList.length - 1 : prev - 1));
+  }
+
+  function nextSlide() {
+    setCurrent((prev) => (prev === imageList.length - 1 ? 0 : prev + 1));
+  }
+
+  // Handle touch swipe
+  function onTouchStart(e: any) {
+    setTouchStart(e.touches[0].clientX);
+  }
+
+  function onTouchMove(e: any) {
+    setTouchEnd(e.touches[0].clientX);
+  }
+
+  function onTouchEnd() {
+    const swipeDistance = touchStart - touchEnd;
+
+    if (swipeDistance > 50) nextSlide(); // swipe left
+    if (swipeDistance < -50) prevSlide(); // swipe right
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
-      {/* Title */}
       <h1
         className="text-3xl font-extrabold text-center mb-4 bg-gradient-to-r 
            from-yellow-600 via-red-600 to-yellow-600 bg-clip-text 
@@ -61,28 +84,50 @@ export default function CockDetailsPage() {
         {cock.bloodline}
       </h1>
 
-      {/* Image Carousel */}
-      <Swiper
-        modules={[Pagination]}
-        pagination={{ clickable: true }}
-        spaceBetween={10}
-        slidesPerView={1}
-        className="rounded-xl shadow-lg mb-4 h-72"
+      {/* Swipeable Image Slider */}
+      <div
+        className="relative w-full h-72 rounded-xl overflow-hidden shadow-lg mb-4"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
-        {imageList.map((image: string, index: number) => (
-          <SwiperSlide key={index}>
-            <div className="relative w-full h-72 rounded-xl overflow-hidden">
-              <Image
-                src={`${process.env.NEXT_PUBLIC_BACKEND}${image}`}
-                alt={`Cock image ${index + 1}`}
-                fill
-                style={{ objectFit: "cover" }}
-                unoptimized
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+        <Image
+          src={`${process.env.NEXT_PUBLIC_BACKEND}${imageList[current]}`}
+          alt="Cock"
+          fill
+          style={{ objectFit: "cover" }}
+          unoptimized
+        />
+
+        {/* Left Button */}
+        <button
+          onClick={prevSlide}
+          className="absolute top-1/2 left-3 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full"
+        >
+          ‹
+        </button>
+
+        {/* Right Button */}
+        <button
+          onClick={nextSlide}
+          className="absolute top-1/2 right-3 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full"
+        >
+          ›
+        </button>
+
+        {/* Dots */}
+        <div className="absolute bottom-3 w-full flex justify-center space-x-2">
+          {imageList.map((_, i) => (
+            <div
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`w-3 h-3 rounded-full cursor-pointer transition ${
+                current === i ? "bg-white" : "bg-white/40"
+              }`}
+            ></div>
+          ))}
+        </div>
+      </div>
 
       {/* Info Box */}
       <div className="bg-white rounded-xl shadow p-4 mb-4">
@@ -114,7 +159,7 @@ export default function CockDetailsPage() {
         </div>
       </div>
 
-      {/* Contact / Order Section */}
+      {/* Contact Section */}
       <div className="bg-white rounded-xl shadow p-4 mb-32">
         <h2 className="text-xl font-bold text-gray-800 mb-3">Order Now</h2>
 

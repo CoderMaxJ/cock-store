@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import userToken from "./api/user/token";
+import { useRouter } from "next/navigation";
 
 export default function CockShopPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,6 +12,7 @@ export default function CockShopPage() {
   const [newComment, setNewComment] = useState<{ [key: number]: string }>({});
   const [likes, setLikes] = useState<{ [key: number]: number }>({});
 
+ const router = useRouter();
   const token = userToken();
 
   // Fetch cocks from backend
@@ -97,6 +99,7 @@ export default function CockShopPage() {
                 style={{ objectFit: "cover" }}
                 className="rounded"
                 unoptimized
+                onClick={()=>router.push(`/cock-details/${cock.id}`)}
               />
             </div>
 
