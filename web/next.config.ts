@@ -4,12 +4,14 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'barili.shop',
-        pathname: '/media/**', // 👈 allow all under /media/
+        protocol: 'http',
+        hostname: '71.61.119.209',
+        port: '8000', // ADD THIS IF BACKEND USES 8000
+        pathname: '/media/**',
       },
     ],
   },
 };
 
 export default nextConfig;
+
