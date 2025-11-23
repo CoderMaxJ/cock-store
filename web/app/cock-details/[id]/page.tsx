@@ -52,6 +52,7 @@ export default function CockDetailsPage() {
     cock.image2,
     cock.image3,
     cock.image4,
+    cock.image5
   ].filter((img) => img && img !== "" && img !== null);
 
   const backend = process.env.NEXT_PUBLIC_BACKEND;
@@ -59,14 +60,14 @@ export default function CockDetailsPage() {
 
   // Always guarantee a valid URL → fixes mobile broken images
   const imageSrc = `${backend}${path.startsWith("/") ? "" : "/"}${path}`;
+console.log(imageSrc)
+function prevSlide() {
+  setCurrent((prev) => (prev - 1 + imageList.length) % imageList.length);
+}
 
-  function prevSlide() {
-    setCurrent((prev) => (prev === 0 ? imageList.length - 1 : prev - 1));
-  }
-
-  function nextSlide() {
-    setCurrent((prev) => (prev === imageList.length - 1 ? 0 : prev + 1));
-  }
+function nextSlide() {
+  setCurrent((prev) => (prev + 1) % imageList.length);
+}
 
   // Touch handlers
   function onTouchStart(e: any) {
@@ -106,7 +107,7 @@ export default function CockDetailsPage() {
           alt="Cock"
           fill
           style={{ objectFit: "cover" }}
-          optimized
+    
         />
 
         {/* Left Button */}
@@ -126,17 +127,17 @@ export default function CockDetailsPage() {
         </button>
 
         {/* Dots */}
-        <div className="absolute bottom-3 w-full flex justify-center space-x-2">
-          {imageList.map((_, i) => (
-            <div
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`w-3 h-3 rounded-full cursor-pointer transition ${
-                current === i ? "bg-white" : "bg-white/40"
-              }`}
-            ></div>
-          ))}
-        </div>
+     <div className="absolute bottom-3 w-full flex justify-center space-x-2">
+      {imageList.map((_, i) => (
+        <div
+          key={i}
+          onClick={() => setCurrent(i)}
+          className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-200 ${
+            current === i ? "bg-white scale-125" : "bg-white/40 scale-100"
+          }`}
+        ></div>
+      ))}
+    </div>
       </div>
 
       {/* Info Box */}
@@ -151,7 +152,7 @@ export default function CockDetailsPage() {
             </span>
           </p>
 
-          <p>
+          <p className="font-semibold">
             <span className="font-semibold">Bloodline:</span> {cock.bloodline}
           </p>
 
@@ -160,10 +161,8 @@ export default function CockDetailsPage() {
           </p>
 
           <p>
-            <span className="font-semibold">Description:</span>
-            <br />
-            <span className="block mt-1 text-gray-600">
-              {cock.description || "High-quality warrior cock."}
+            <span className="block mt-1  font-semibold">
+             Age: {cock.age}
             </span>
           </p>
         </div>
