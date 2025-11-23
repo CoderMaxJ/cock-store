@@ -5,12 +5,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: 'localhost',
-        port: '8000', // 👈 your Django port
-        pathname: '/media/**', // 👈 allow all under /media/
+        hostname: '72.61.119.209',
+        port: '8000', // ADD THIS IF BACKEND USES 8000
+        pathname: '/media/**',
       },
     ],
   },
 };
 
 export default nextConfig;
+
