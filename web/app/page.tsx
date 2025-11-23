@@ -4,13 +4,11 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import userToken from "./api/user/token";
 import { useRouter } from "next/navigation";
+import { url } from "inspector";
 
 export default function CockShopPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [cocks, setCocks] = useState<any[]>([]);
-  const [comments, setComments] = useState<{ [key: number]: string[] }>({});
-  const [newComment, setNewComment] = useState<{ [key: number]: string }>({});
-  const [likes, setLikes] = useState<{ [key: number]: number }>({});
 
  const router = useRouter();
   const token = userToken();
@@ -40,9 +38,6 @@ export default function CockShopPage() {
         initialComments[c.id] = [];
         initialLikes[c.id] = 0;
       });
-
-      setComments(initialComments);
-      setLikes(initialLikes);
     }
   }
 
@@ -53,10 +48,6 @@ export default function CockShopPage() {
   const filteredCocks = cocks.filter((c) =>
     c.bloodline.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleLike = (id: number) => {
-    setLikes((prev) => ({ ...prev, [id]: prev[id] + 1 }));
-  };
 
   async function react(id:Number,type:String){
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/react/`,{
@@ -127,11 +118,43 @@ export default function CockShopPage() {
               Age: {cock.age}
             </p>
             <p className="text-gray-600 text-sm mb-2">
-              Location: {cock.location}
+              {cock.victory ? `${cock.victory}x Winner` : null}
             </p>
             <p className="text-gray-600 text-sm mb-2">
-              Wins: {cock.victory || 0}
+              Class {cock.category}
             </p>
+            <p className="text-gray-600 text-sm mb-2">
+              Location: {cock.location}
+            </p>
+            {cock.spar_link && (
+              <div className="flex">
+                <a
+                  href={cock.spar_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 transition px-4 py-2 rounded-lg shadow-sm text-gray-700 text-sm font-medium"
+                >
+                  {/* Play Icon */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                    />
+                  </svg>
+                  <span>Watch Spar</span>
+                </a>
+              </div>
+
+             
+            )}
               <p className="text-black-500 font-bold text-lg mb-2">
               ₱{cock.price || 100}
             </p>
@@ -148,9 +171,9 @@ export default function CockShopPage() {
               {/* Chat */}
               <button
                 onClick={() =>react(cock.id,'comment')}
-                className="flex items-center gap-2 text-red-600 font-semibold"
+                className="flex items-center gap-2 text-red-600 text-xl font-semibold"
               >
-                💬 {cock.like}
+                💬
               </button>
 
               {/* Horn */}
@@ -189,6 +212,10 @@ export default function CockShopPage() {
                 />
               </svg>
             </button>
+            <div className="flex w-full justify-between">
+              <p className="text-gray-600 text-xs mb-2">By: {cock.owner_username}</p>
+              <p className="text-gray-600 text-xs mb-2">Posted: {cock.date_posted}</p>
+            </div>
           </div>
         ))}
       </div>
