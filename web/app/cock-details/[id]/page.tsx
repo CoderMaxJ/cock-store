@@ -80,7 +80,7 @@ export default function CockDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 pb-20">
+    <div className="min-h-screen p-4 pb-20 bg-black">
       <div className="w-full h-[175px]  relative rounded">
         <Image src="/images/templates/template.png"
           alt="template"

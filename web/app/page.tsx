@@ -67,7 +67,7 @@ export default function CockShopPage() {
   return (
     <div className="min-h-screen bg-gray-100  mb-10 m-0 p-0">
       {/* Header (fixed) */}
-      <div className="fixed top-0 left-0  h-[258px] right-0 z-50 bg-green-500 backdrop-blur-md p-4 shadow-lg">
+      <div className="fixed top-0 left-0  h-[258px] right-0 z-50 bg-black rounded backdrop-blur-md p-4 shadow-lg">
        <div className="w-full h-[150px] relative rounded">
         <Image
           src="/images/templates/template.png"
@@ -77,18 +77,18 @@ export default function CockShopPage() {
         />
       </div>
         <div className="flex  gap-5 mb-2">
-         <div className="flex items-center justify-around gap-10 mt-4 w-full border border-gray-300 rounded bg-green-500">
+         <div className="flex items-center justify-around gap-10 mt-4 w-full border border-gray-300 rounded bg-black">
             <input
               type="text"
               placeholder="Search by bloodline..."
-              className="w-70 p-2 border border-gray-300 rounded-lg shadow-sm bg-white text-ls outline-none"
+              className="w-70 ml-3 p-2 border border-gray-300 rounded-lg shadow-sm bg-white text-ls outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
 
            <button
               className="flex flex-col items-center p-2 rounded-xl 
-                        transition w-20 bg-green-500"
+                        transition w-20 bg-black"
             >
               <div className="p-1 rounded-full bg-white shadow-sm">
                 <svg
@@ -116,7 +116,7 @@ export default function CockShopPage() {
       </div>
 
       {/* Main Grid */}
-      <div className="pt-65 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+      <div className="pt-67 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
                       lg:grid-cols-4 xl:grid-cols-5 gap-6">
 
         {filteredCocks.map((cock) => (
