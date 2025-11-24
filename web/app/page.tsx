@@ -33,7 +33,7 @@ export default function CockShopPage() {
       // Initialize comments & likes
       const initialComments: { [key: number]: string[] } = {};
       const initialLikes: { [key: number]: number } = {};
-      setUser(localStorage.getItem('user') || 'Unregistered')
+      setUser(localStorage.getItem('user') || 'Guest');
       data.forEach((c: any) => {
         initialComments[c.id] = [];
         initialLikes[c.id] = 0;
@@ -65,9 +65,9 @@ export default function CockShopPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 mb-10">
+    <div className="min-h-screen bg-gray-100  mb-10 m-0 p-0">
       {/* Header (fixed) */}
-      <div className="fixed top-0 left-0  h-[250px] right-0 z-50 bg-white/90 backdrop-blur-md p-4 shadow-lg">
+      <div className="fixed top-0 left-0  h-[258px] right-0 z-50 bg-green-500 backdrop-blur-md p-4 shadow-lg">
        <div className="w-full h-[150px] relative rounded">
         <Image
           src="/images/templates/template.png"
@@ -76,23 +76,19 @@ export default function CockShopPage() {
           className="object-cover rounded"
         />
       </div>
-
-
-        <div className="flex justify-center">
-         <div className="flex items-center gap-2 mt-4">
+        <div className="flex  gap-5 mb-2">
+         <div className="flex items-center justify-around gap-10 mt-4 w-full border border-gray-300 rounded bg-green-500">
             <input
               type="text"
               placeholder="Search by bloodline..."
-              className="w-60 p-2 border border-gray-300 rounded-lg shadow-sm 
-                        focus:outline-none focus:ring-2 focus:ring-gray-300 
-                        text-sm"
+              className="w-70 p-2 border border-gray-300 rounded-lg shadow-sm bg-white text-ls outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
 
            <button
               className="flex flex-col items-center p-2 rounded-xl 
-                        transition w-20"
+                        transition w-20 bg-green-500"
             >
               <div className="p-1 rounded-full bg-white shadow-sm">
                 <svg
@@ -111,7 +107,7 @@ export default function CockShopPage() {
                 </svg>
               </div>
 
-              <span className="text-xs font-medium text-gray-700 mt-1">{user}</span>
+              <span className="text-xs font-medium text-white mt-1">{user}</span>
             </button>
 
           </div>
@@ -120,7 +116,7 @@ export default function CockShopPage() {
       </div>
 
       {/* Main Grid */}
-      <div className="pt-60 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+      <div className="pt-65 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
                       lg:grid-cols-4 xl:grid-cols-5 gap-6">
 
         {filteredCocks.map((cock) => (
