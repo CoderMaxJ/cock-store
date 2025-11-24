@@ -90,12 +90,12 @@ export default function CockDetailsPage() {
 
       {/* Image Slider */}
       <div
-        className="relative w-full h-120 mt-1 rounded-lg  overflow-hidden  mb-6"
+        className="relative w-full h-105 mt-1 rounded-lg  overflow-hidden  mb-6"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <Image src={imageSrc} alt="Cock" fill  style={{objectFit: "cover",objectPosition: "center",transform: "scale(0.95)"}} className="rounded-xl" unoptimized />
+        <Image src={imageSrc} alt="Cock" fill  style={{objectFit: "cover"}} className="rounded-xl" unoptimized />
 
         <div className="absolute bottom-6 w-full flex justify-center space-x-2">
           {imageList.map((_, i) => (
