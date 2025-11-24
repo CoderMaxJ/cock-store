@@ -126,16 +126,16 @@ export default function CockShopPage() {
         {filteredCocks.map((cock) => (
           <div
             key={cock.id}
-            className="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col"
+            className="bg-white rounded-lg shadow hover:shadow-lg transition p-1 flex flex-col"
           >
             {/* Image */}
-            <div className="relative w-full h-48 overflow-hidden rounded mb-4">
+            <div className="relative w-full h-120 overflow-hidden rounded mb-4">
               <Image
                 src={`${process.env.NEXT_PUBLIC_BACKEND}${cock.image1}`}
                 alt={cock.bloodline}
                 fill
-                style={{ objectFit: "cover" }}
-                className="rounded"
+                style={{objectFit: "cover",objectPosition: "center",transform: "scale(0.95)"}}
+                className="rounded-xl"
                 unoptimized
                 onClick={()=>router.push(`/cock-details/${cock.id}`)}
               />

@@ -81,34 +81,23 @@ export default function CockDetailsPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 pb-20">
-      <h1 className="text-3xl font-extrabold text-center mb-6 bg-gradient-to-r from-yellow-600 via-red-600 to-yellow-600 bg-clip-text text-transparent">
-        {cock.bloodline}
-      </h1>
+      <div className="w-full h-[175px]  relative rounded">
+        <Image src="/images/templates/template.png"
+          alt="template"
+          fill
+          className="object-cover rounded"/>
+      </div>
 
       {/* Image Slider */}
       <div
-        className="relative w-full h-72 rounded-xl overflow-hidden shadow-lg mb-6"
+        className="relative w-full h-120 mt-1 rounded-lg  overflow-hidden  mb-6"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <Image src={imageSrc} alt="Cock" fill style={{ objectFit: "cover" }} unoptimized />
+        <Image src={imageSrc} alt="Cock" fill  style={{objectFit: "cover",objectPosition: "center",transform: "scale(0.95)"}} className="rounded-xl" unoptimized />
 
-        <button
-          onClick={prevSlide}
-          className="absolute top-1/2 left-3 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 transition"
-        >
-          ‹
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="absolute top-1/2 right-3 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 transition"
-        >
-          ›
-        </button>
-
-        <div className="absolute bottom-3 w-full flex justify-center space-x-2">
+        <div className="absolute bottom-6 w-full flex justify-center space-x-2">
           {imageList.map((_, i) => (
             <div
               key={i}
