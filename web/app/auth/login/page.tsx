@@ -25,6 +25,7 @@ export default function Login() {
         console.log("Login successful", data);
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refreshToken", data.refresh_token);
+        localStorage.setItem("user",data.user);
         // router.push("/"); // use absolute path
       } else {
         setError(data.message || data.error || "Login failed");

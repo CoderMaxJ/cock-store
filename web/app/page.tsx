@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import Image from "next/image";
 import userToken from "./api/user/token";
 import { useRouter } from "next/navigation";
-import { url } from "inspector";
 
 export default function CockShopPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [cocks, setCocks] = useState<any[]>([]);
+  const [user,setUser]=useState('');
 
  const router = useRouter();
   const token = userToken();
@@ -33,7 +33,7 @@ export default function CockShopPage() {
       // Initialize comments & likes
       const initialComments: { [key: number]: string[] } = {};
       const initialLikes: { [key: number]: number } = {};
-
+      setUser(localStorage.getItem('user') || 'Unregistered')
       data.forEach((c: any) => {
         initialComments[c.id] = [];
         initialLikes[c.id] = 0;
@@ -66,29 +66,61 @@ export default function CockShopPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 mb-10">
-
       {/* Header (fixed) */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md p-4 shadow-lg">
-        <h1 className="text-4xl font-extrabold mb-4 text-center 
-            bg-gradient-to-r from-yellow-600 via-red-600 to-yellow-600 
-            text-transparent bg-clip-text drop-shadow-lg tracking-wide">
-          Get your Warrior
-        </h1>
+      <div className="fixed top-0 left-0  h-[250px] right-0 z-50 bg-white/90 backdrop-blur-md p-4 shadow-lg">
+       <div className="w-full h-[150px] relative rounded">
+        <Image
+          src="/images/templates/template.png"
+          alt="template"
+          fill
+          className="object-cover rounded"
+        />
+      </div>
+
 
         <div className="flex justify-center">
-          <input
-            type="text"
-            placeholder="Search by bloodline..."
-            className="w-full max-w-md p-3 border border-gray-300 rounded shadow-sm 
-                       focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+         <div className="flex items-center gap-2 mt-4">
+            <input
+              type="text"
+              placeholder="Search by bloodline..."
+              className="w-60 p-2 border border-gray-300 rounded-lg shadow-sm 
+                        focus:outline-none focus:ring-2 focus:ring-gray-300 
+                        text-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+           <button
+              className="flex flex-col items-center p-2 rounded-xl 
+                        transition w-20"
+            >
+              <div className="p-1 rounded-full bg-white shadow-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+              </div>
+
+              <span className="text-xs font-medium text-gray-700 mt-1">{user}</span>
+            </button>
+
+          </div>
+
         </div>
       </div>
 
       {/* Main Grid */}
-      <div className="pt-40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+      <div className="pt-60 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
                       lg:grid-cols-4 xl:grid-cols-5 gap-6">
 
         {filteredCocks.map((cock) => (
