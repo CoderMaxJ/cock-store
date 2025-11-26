@@ -28,7 +28,8 @@ export default function CockShopPage() {
 
     if (response.ok) {
       const data = await response.json();
-      setCocks(data);
+      setCocks(data.data);
+      localStorage.setItem('token',data.token)
 
       // Initialize comments & likes
       const initialComments: { [key: number]: string[] } = {};
@@ -44,6 +45,18 @@ export default function CockShopPage() {
   useEffect(() => {
     getCocks();
   }, []);
+
+  
+useEffect(() => {
+    if (user === 'Guest') {
+        const timer = setTimeout(() => {
+            router.replace('/auth/login');
+        }, 20000);
+
+        // Cleanup if component unmounts before timeout
+        return () => clearTimeout(timer);
+    }
+}, [user]);
 
   const filteredCocks = cocks.filter((c) =>
     c.bloodline.toLowerCase().includes(searchTerm.toLowerCase())
@@ -61,6 +74,14 @@ export default function CockShopPage() {
 
     if(response.status === 200){
       getCocks();
+    }
+  }
+
+  function forceRegister(){
+    if(user === 'Guest'){
+      setInterval(()=>{
+          router.push('/auth/login')
+      },20000)
     }
   }
 

@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 
 export default function CreateAccountForm() {
   const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    phone: "",
-    messenger: "",
+    number: "",
+    messenger_link: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -34,9 +34,9 @@ export default function CreateAccountForm() {
     }
 
     setLoading(true);
-    console.log(formData);
+    
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/create-account/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/registration/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export default function CreateAccountForm() {
       });
 
       if (!res.ok) throw new Error("Failed to create account");
-
+      localStorage.setItem('user',formData.first_name);
       router.push("/"); // redirect after success
     } catch (err: any) {
       setError(err.message || "Something went wrong");
@@ -71,18 +71,18 @@ export default function CreateAccountForm() {
         <div className="flex gap-4">
           <input
             type="text"
-            name="firstname"
+            name="first_name"
             placeholder="First Name"
-            value={formData.firstname}
+            value={formData.first_name}
             onChange={handleChange}
             required
             className="w-1/2 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <input
             type="text"
-            name="lastname"
+            name="last_name"
             placeholder="Last Name"
-            value={formData.lastname}
+            value={formData.last_name}
             onChange={handleChange}
             required
             className="w-1/2 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -105,25 +105,23 @@ export default function CreateAccountForm() {
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
-          required
           className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
         <input
           type="tel"
-          name="phone"
+          name="number"
           placeholder="Phone Number"
-          value={formData.phone}
+          value={formData.number}
           onChange={handleChange}
-          required
           className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
         <input
           type="text"
-          name="messenger"
+          name="messenger_link"
           placeholder="Messenger Link"
-          value={formData.messenger}
+          value={formData.messenger_link}
           onChange={handleChange}
           className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />

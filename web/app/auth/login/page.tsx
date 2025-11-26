@@ -22,11 +22,10 @@ export default function Login() {
       const data = await res.json(); // call only once
 
       if (res.status === 200) {
-        console.log("Login successful", data);
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refreshToken", data.refresh_token);
         localStorage.setItem("user",data.user);
-        // router.push("/"); // use absolute path
+        router.push("/"); // use absolute path
       } else {
         setError(data.message || data.error || "Login failed");
       }
@@ -84,7 +83,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-gray-500 text-sm">
           Don't have an account?{" "}
-          <a href="/register" className="text-indigo-500 hover:underline">
+          <a href="/pages/register" className="text-indigo-500 hover:underline">
             Sign up
           </a>
         </p>
