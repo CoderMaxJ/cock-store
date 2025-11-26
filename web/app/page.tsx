@@ -87,6 +87,7 @@ export default function CockShopPage() {
             />
 
            <button
+              onClick={()=>router.push('pages/register')}
               className="flex flex-col items-center p-2 rounded-xl 
                         transition w-20 bg-black"
             >
