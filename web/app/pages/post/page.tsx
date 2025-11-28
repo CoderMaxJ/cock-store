@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import userToken from "@/app/api/user/token";
+import Image from "next/image";
 
 export default function Post() {
   const [files, setFiles] = useState<FileList | null>(null);
@@ -83,12 +84,16 @@ export default function Post() {
 
     setLoading(false);   // <-- STOP LOADING
   };
-
+ const count = files?.length ?? 0;
   return (
     <div className="min-h-screen bg-zinc-100 dark:bg-black flex flex-col items-center py-10 px-4">
-      <h1 className="text-3xl font-extrabold mb-6 bg-gradient-to-r from-yellow-600 to-red-600 bg-clip-text text-transparent">
-        Post your best Warrior
-      </h1>
+      <div className="w-full h-[175px]  relative rounded">
+             <Image src="/images/templates/template.png"
+                  alt="template"
+                  fill
+                  className="object-cover rounded"/>
+              
+      </div>
 
       <form
         onSubmit={handleSubmit}
@@ -187,7 +192,11 @@ export default function Post() {
           <span className="text-gray-600">Tap to upload images</span>
           <input type="file" multiple onChange={handleFileChange} className="hidden" />
         </label>
-
+        {count > 0 && (
+          <p className="text-sm text-gray-600 text-center mt-1">
+            {`Selected ${count} image${count > 1 ? "s" : ""}`}
+          </p>
+        )}
         {/* Submit */}
         <button
           type="submit"

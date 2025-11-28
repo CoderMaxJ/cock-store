@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function CreateAccountForm() {
   const [formData, setFormData] = useState({
@@ -59,7 +60,15 @@ export default function CreateAccountForm() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-start bg-gray-100 p-4 pt-28">
+    <div className="w-full">
+      <div className="w-full h-[175px]  relative rounded">
+                   <Image src="/images/templates/template.png"
+                        alt="template"
+                        fill
+                        className="object-cover rounded"/>
+                    
+            </div>
+    <div className="min-h-screen flex justify-center items-start bg-gray-100 p-4 ">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white p-6 rounded-xl shadow-md space-y-4"
@@ -155,5 +164,7 @@ export default function CreateAccountForm() {
         </button>
       </form>
     </div>
+
+   </div>
   );
 }
