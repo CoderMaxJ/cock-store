@@ -21,7 +21,7 @@ export default function CockType({Signal}:props) {
   // Save value on change
   useEffect(() => {
     if (selected) {
-        if(selected === "Latest"){
+        if(selected === ""){
             if (typeof window !== "undefined") {
             localStorage.removeItem("category");
             Signal();
@@ -35,6 +35,7 @@ export default function CockType({Signal}:props) {
       
     }
   }, [selected]);
+
 
   // Close when clicking outside
   useEffect(() => {
@@ -54,7 +55,7 @@ export default function CockType({Signal}:props) {
         onClick={() => setOpen(!open)}
         className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm text-white ring-1 ring-white/20 hover:bg-white/20"
       >
-        {selected || "Latest"}
+        {selected || localStorage.getItem("category")}
 
         <svg
           className={`size-5 text-gray-400 transition-transform ${
@@ -73,8 +74,8 @@ export default function CockType({Signal}:props) {
       {open && (
         <div className="absolute right-0 z-10 mt-2 w-40 origigit n-top-right divide-y divide-white/10 rounded-md bg-gray-800 shadow-xl ring-1 ring-white/10">
           <div className="py-1">
-            <button onClick={() => setSelectedType("Latest")} className="block px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white">
-              Random
+            <button onClick={() => {setSelectedType("Category");Signal();localStorage.removeItem("category");}} className="block px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white">
+              Category
             </button>
             <button onClick={() => setSelectedType("Super")} className="block px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white">
               Super

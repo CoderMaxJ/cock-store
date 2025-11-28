@@ -22,7 +22,7 @@ export default function DropDown() {
       {/* Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex w-full justify-center gap-x-1.5  bg-black  px-2 py-2 text-sm font-semibold text-white"
+        className="inline-flex w-full justify-center gap-x-1.5  bg-black  px-3 border border-gray-500 rounded py-2 text-sm font-semibold text-white"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -40,6 +40,8 @@ export default function DropDown() {
             <a className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white" href="#">
               Dashboard
             </a>
+            </div>
+            <div className="py-1">
             <a className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white" href="/pages/post">
               Sell
             </a>
@@ -49,6 +51,8 @@ export default function DropDown() {
             <a className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white" href="#">
               Manage Post
             </a>
+            </div>
+            <div className="py-1">
             <a className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white" href="#">
               Register Account
             </a>

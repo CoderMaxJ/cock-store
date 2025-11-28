@@ -8,6 +8,7 @@ import Spinner from "@/components/loading/page";
 import DropDown from "@/components/dropdown/page";
 import CockType from "@/components/dropdown/cocktype/page";
 import { Suspense } from 'react'; // Import Suspense
+import CommentSection from "@/components/comments/page";
 
 export default function CockShopPage() {
   const [cocks, setCocks] = useState<any[]>([]);
@@ -16,6 +17,11 @@ export default function CockShopPage() {
   const [type,setType]=useState("");
   const searchParams = useSearchParams();
   const query = searchParams.get("query") ?? "";
+  const [isShrunk, setIsShrunk] = useState(false); // ⭐ new
+  const [isliked,setIsLiked]=useState(false);
+  const [isreacted,setIsreacted]=useState(false);
+  const [activeCommentId, setActiveCommentId] = useState<number | null>(null);
+
 
   const router = useRouter();
   const token = userToken();
@@ -23,7 +29,7 @@ export default function CockShopPage() {
     if (typeof window !== "undefined") {
     setType(localStorage.getItem("category") ?? "");
     }
-  },[])
+  },[getCocks])
   // Fetch cocks whenever search query changes
   async function getCocks() {
     setLoading(true);
@@ -67,21 +73,74 @@ export default function CockShopPage() {
   }, [user]);
 
   // React button action
-  async function react(id: Number, type: String) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/react/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ id, type }),
-    });
-
-    if (response.status === 200) {
-      getCocks(); // refresh counts
-    }
+async function react(id: number, action: string) {
+  if(action === "like"){
+    setIsLiked(true);
+    setTimeout(()=>{
+      setIsLiked(false);
+    },1000)
   }
+  if (action ==="heart"){
+    setIsreacted(true);
+    setTimeout(()=>{
+      setIsreacted(false);
+    },1000)
+  }
+  // 1. Optimistic UI update
+  setCocks((prevCocks) =>
+    prevCocks.map((cock) =>
+      cock.id === id
+        ? {
+            ...cock,
+            heart: action === "heart" ? cock.heart + 1 : cock.heart,
+            like: action === "like" ? cock.like + 1 : cock.like,
+          }
+        : cock
+    )
+  );
 
+  // 2. Send to backend
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/react/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ id, type: action }),
+  });
+
+  // 3. If backend fails, rollback UI
+  if (!response.ok) {
+    setCocks((prevCocks) =>
+      prevCocks.map((cock) =>
+        cock.id === id
+          ? {
+              ...cock,
+              heart: action === "heart" ? cock.heart - 1 : cock.heart,
+              like: action === "like" ? cock.like - 1 : cock.like,
+            }
+          : cock
+      )
+    );
+  }
+}
+  useEffect(() => {
+    let lastScroll = 0;
+
+    const handleScroll = () => {
+      const current = window.scrollY;
+
+      if (current > lastScroll && current > 50) {
+        setIsShrunk(true); // scroll down
+      } else {
+        setIsShrunk(false); // scroll up
+      }
+      lastScroll = current;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
     <div
       className={`min-h-screen bg-gray-100 mb-10 m-0 p-0 ${
@@ -92,7 +151,7 @@ export default function CockShopPage() {
       {isLoading && <Spinner />}
 
       {/* Header */}
-      <div className="fixed top-0 left-0 h-[258px] right-0 z-50 bg-black rounded backdrop-blur-md p-4 shadow-lg">
+      <div className="fixed top-0 left-0  h-[258px] right-0 z-50 bg-black rounded backdrop-blur-md p-4 shadow-lg" style={{display: isShrunk ? "none":"block"}}>
         {/* Banner */}
         <div className="relative w-full h-[150px] relative rounded bg-center bg-cover bg-no-repeat" style={{backgroundImage:"url(/images/templates/template.png)"}}>
            <div className="absolute right-0">
@@ -115,6 +174,7 @@ export default function CockShopPage() {
 
       {/* Grid */}
       <div className="pt-67 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <CommentSection id={1}/>
         {cocks.length < 1 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="text-5xl mb-4">🔍</div>
@@ -147,13 +207,13 @@ export default function CockShopPage() {
             </h2>
 
             <p className="text-gray-600 text-sm mb-2">Age: {cock.age}</p>
-            {cock.victory && (
+            {cock.victory > 0 && (
               <p className="text-gray-600 text-sm mb-2">
                 {cock.victory}x Winner
               </p>
             )}
             <p className="text-gray-600 text-sm mb-2">
-              Class {cock.category}
+              Class: {cock.category}
             </p>
             <p className="text-gray-600 text-sm mb-2">
               Location: {cock.location}
@@ -181,22 +241,31 @@ export default function CockShopPage() {
               <button
                 onClick={() => react(cock.id, "heart")}
                 className="flex items-center gap-2 text-red-600 font-semibold"
+                style={{fontSize: isreacted ? "20px": ""}}
               >
                 ❤️ {cock.heart}
               </button>
 
-              <button
-                onClick={() => react(cock.id, "comment")}
-                className="flex items-center gap-2 text-red-600 text-xl font-semibold"
+               <button
+                onClick={() => setActiveCommentId(activeCommentId === cock.id ? null : cock.id)}
+                className="flex items-center gap-2 text-blue-600 text-xl font-semibold"
               >
-                💬
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                </svg>
+
               </button>
 
               <button
                 onClick={() => react(cock.id, "like")}
                 className="flex items-center gap-2 text-red-600 font-semibold"
+                style={{fontSize: isliked ? "20px": ""}}
               >
-                👍 {cock.like}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
+                </svg>
+
+                 {cock.like}
               </button>
             </div>
 
@@ -211,6 +280,7 @@ export default function CockShopPage() {
                 Posted: {cock.date_posted}
               </p>
             </div>
+              {activeCommentId === cock.id && <CommentSection id={cock.id} />}
           </div>
         ))}
       </div>
