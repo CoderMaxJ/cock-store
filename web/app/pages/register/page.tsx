@@ -50,7 +50,9 @@ export default function CreateAccountForm() {
       });
 
       if (!res.ok) throw new Error("Failed to create account");
+      if (typeof window !== "undefined") {
       localStorage.setItem('user',formData.first_name);
+      }
       router.push("/"); // redirect after success
     } catch (err: any) {
       setError(err.message || "Something went wrong");

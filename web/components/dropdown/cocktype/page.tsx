@@ -18,11 +18,15 @@ export default function CockType({Signal}:props) {
   useEffect(() => {
     if (selected) {
         if(selected === "Latest"){
+            if (typeof window !== "undefined") {
             localStorage.removeItem("category");
             Signal();
+            }
         }else{
+            if (typeof window !== "undefined") {
             localStorage.setItem("category", selected);
             Signal();
+            }
         }
       
     }

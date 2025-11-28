@@ -39,7 +39,9 @@ export default function CockShopPage() {
     if (response.ok) {
       const data = await response.json();
       setCocks(data.data);
+      if (typeof window !== "undefined") {
       localStorage.setItem("token", data.token);
+      }
     }
 
     setUser(localStorage.getItem("user") || "Guest");
