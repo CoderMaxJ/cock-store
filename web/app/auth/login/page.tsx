@@ -22,9 +22,12 @@ import { useRouter } from "next/navigation";
       const data = await res.json(); // call only once
 
       if (res.status === 200) {
+        if (typeof window !== "undefined") {
+        localStorage.setItem("token", data.token);
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refreshToken", data.refresh_token);
         localStorage.setItem("user",data.user);
+        }
         router.push("/"); // use absolute path
       } else {
         setError(data.message || data.error || "Login failed");

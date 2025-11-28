@@ -13,14 +13,17 @@ export default function CockShopPage() {
   const [cocks, setCocks] = useState<any[]>([]);
   const [user, setUser] = useState("");
   const [isLoading, setLoading] = useState(false);
-  
-  const type = localStorage.getItem("category") ?? "";
+  const [type,setType]=useState("");
   const searchParams = useSearchParams();
   const query = searchParams.get("query") ?? "";
 
   const router = useRouter();
   const token = userToken();
-
+  useEffect(()=>{
+    if (typeof window !== "undefined") {
+    setType(localStorage.getItem("category") ?? "");
+    }
+  },[])
   // Fetch cocks whenever search query changes
   async function getCocks() {
     setLoading(true);
@@ -40,11 +43,13 @@ export default function CockShopPage() {
       const data = await response.json();
       setCocks(data.data);
       if (typeof window !== "undefined") {
-      localStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.token);
       }
     }
 
-    setUser(localStorage.getItem("user") || "Guest");
+    if (typeof window !== "undefined") {
+      setUser(localStorage.getItem("user") || "Guest");
+    }
     setLoading(false);
   }
 

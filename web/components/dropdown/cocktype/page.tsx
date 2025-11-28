@@ -7,11 +7,15 @@ export default function CockType({Signal}:props) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [selected, setSelectedType] = useState("");
+  const [saved,SetSave]=useState("");
 
   // Load initial value
   useEffect(() => {
-    const saved = localStorage.getItem("category");
-    if (saved) setSelectedType(saved);
+      if (typeof window !== "undefined") {
+         SetSave(localStorage.getItem("category") ||  '');
+        if (saved) setSelectedType(saved);
+      }
+   
   }, []);
 
   // Save value on change
