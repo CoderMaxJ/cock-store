@@ -1,4 +1,6 @@
-    // components/SearchInput.jsx
+
+    "use client";
+
     import { useSearchParams, usePathname, useRouter } from 'next/navigation';
     import { useDebouncedCallback } from 'use-debounce';
 

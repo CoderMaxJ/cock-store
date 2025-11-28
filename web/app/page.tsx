@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,6 +7,7 @@ import SearchInput from "@/components/search/page";
 import Spinner from "@/components/loading/page";
 import DropDown from "@/components/dropdown/page";
 import CockType from "@/components/dropdown/cocktype/page";
+import { Suspense } from 'react'; // Import Suspense
 
 export default function CockShopPage() {
   const [cocks, setCocks] = useState<any[]>([]);
@@ -100,7 +100,10 @@ export default function CockShopPage() {
            </div>
             
              <div className="absolute top-38 flex items-center justify-center gap-5 w-full rounded bg-black p-2">
-                <SearchInput />
+                <Suspense fallback={<div>Loading search bar...</div>}>
+                  <SearchInput />
+                </Suspense>
+                
 
                 <CockType Signal={getCocks}/>
           </div>
