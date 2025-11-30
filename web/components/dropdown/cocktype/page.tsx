@@ -55,7 +55,7 @@ export default function CockType({Signal}:props) {
         onClick={() => setOpen(!open)}
         className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm text-white ring-1 ring-white/20 hover:bg-white/20"
       >
-        {selected || localStorage.getItem("category")}
+        {selected}
 
         <svg
           className={`size-5 text-gray-400 transition-transform ${

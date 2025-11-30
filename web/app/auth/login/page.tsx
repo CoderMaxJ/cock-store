@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("refreshToken", data.refresh_token);
         localStorage.setItem("user",data.user);
+        localStorage.setItem("user_id",data.user_id);
         }
         router.push("/"); // use absolute path
       } else {
