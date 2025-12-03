@@ -147,7 +147,7 @@ export default function CockDetailsPage() {
       <div className="bg-white rounded-xl shadow p-4">
         <h2 className="text-xl font-bold text-gray-800 mb-3">Order Now</h2>
         <a
-          href={`tel:${cock.contact_number}`}
+          href="tel:09661344660"
           className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-yellow-600 text-white text-center py-3 rounded-lg text-lg font-semibold transition"
         >
           Call Seller
