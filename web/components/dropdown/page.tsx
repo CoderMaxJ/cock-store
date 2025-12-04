@@ -53,7 +53,7 @@ export default function DropDown() {
             </a>
             </div>
             <div className="py-1">
-            <a className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white" href="#">
+            <a className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white" href="/pages/register">
               Register Account
             </a>
           </div>
