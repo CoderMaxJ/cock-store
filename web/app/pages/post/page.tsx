@@ -16,15 +16,27 @@ export default function Post() {
   const [location, setLocation] = useState("");
   const [ageUnit,setAgeUnit]=useState("Years");
   const [link,setLink]=useState("");
+  const [previews, setPreviews] = useState<string[]>([]);
+
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);   // <-- ADDED
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setFiles(e.target.files);
-  };
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files; // may be null
+
+  if (!files) return; // nothing selected
+
+  setFiles(files);
+
+  // safely convert FileList to array
+  const urls = Array.from(files).map((file) => URL.createObjectURL(file));
+  setPreviews(urls);
+};
+
 
   const handleSubmit = async (e: React.FormEvent) => {
+   
     e.preventDefault();
 
     if (loading) return; // prevent double submit
@@ -194,12 +206,14 @@ export default function Post() {
           <span className="text-gray-600 text-white">Tap to upload images</span>
           <input type="file" multiple onChange={handleFileChange} className="hidden" />
         </label>
-        {count > 0 && (
-          <p className="text-sm text-gray-600 text-center mt-1">
-            {`Selected ${count} image${count > 1 ? "s" : ""}`}
-          </p>
-        )}
         {/* Submit */}
+        <div className="flex w-full items-center gap-3">
+        {previews.length > 0 && (
+          previews.map((src,index)=>(
+                <Image key={index} src={src} width="40" height="40" alt="image"  style={{ objectFit: "cover" }} className="rounded-xs"/>
+          ))
+        )}
+         </div>
         <button
           type="submit"
           disabled={loading}

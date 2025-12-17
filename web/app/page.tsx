@@ -131,9 +131,15 @@ async function react(id: number, action: string) {
       const current = window.scrollY;
 
       if (current > lastScroll && current > 50) {
-        setIsShrunk(true); // scroll down
+        setTimeout(()=>{
+          setIsShrunk(true); // scroll down
+        },1000)
+        
       } else {
-        setIsShrunk(false); // scroll up
+        setTimeout(()=>{
+          setIsShrunk(false); // scroll up
+        },1000)
+        
       }
       lastScroll = current;
     };
